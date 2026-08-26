@@ -117,4 +117,4 @@ drawdown = (
 
 maximum_drawdown = drawdown.min()
 
-print("Maximum drawdown (%):", maximum_drawdown * 100)
+data.to_csv("data/strategy_data.csv", index=False)
