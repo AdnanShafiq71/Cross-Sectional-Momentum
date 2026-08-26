@@ -31,7 +31,6 @@ US large-cap equity universe, built with Python and SQL.
 ## Statistical Significance
 
 Newey-West t-statistic: [-0.000], p-value:  [0.999].
-[One sentence: is the result statistically distinguishable from zero?]
 
 ## Parameter Research
 
