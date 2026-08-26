@@ -21,18 +21,10 @@ data["Momentum_Rank"] = (
     .rank(ascending=False)
 )
 
-print(
-    data[data["Date"] == "2022-01-03"][
-        ["Date", "Ticker", "Momentum_12_1", "Momentum_Rank"]
-    ]
-    .sort_values("Momentum_Rank")
-)
-
 data["Month"] = data["Date"].dt.to_period("M")
 month_end_dates = data.groupby("Month")["Date"].max()
 month_end_data = data[data["Date"].isin(month_end_dates.values)]
 month_end_data = month_end_data.dropna(subset=["Momentum_12_1"])
-print(month_end_data[["Date", "Ticker", "Momentum_12_1", "Momentum_Rank"]].head(20))
 
 month_end_data["Position"] = 0
 
@@ -45,8 +37,84 @@ month_end_data.loc[
     month_end_data["Momentum_Rank"] >= 41,
     "Position"
 ] = -1
-print(
-    month_end_data[
-        ["Date", "Ticker", "Momentum_Rank", "Position"]
-    ].head(50)
+
+month_end_data["Holding_Month"] = (
+    month_end_data["Month"] + 1
 )
+
+data["Daily_Return"] = (
+    data.groupby("Ticker")["Close"].pct_change()
+)
+
+data = data.merge(
+    month_end_data[["Ticker", "Holding_Month", "Position"]],
+    left_on=["Ticker", "Month"],
+    right_on=["Ticker", "Holding_Month"],
+    how="left"
+)
+
+data["Strategy_Return"] = data["Daily_Return"] * data["Position"]
+
+daily_portfolio_returns = (
+    data[data["Position"].notna() & (data["Position"] != 0)]
+    .groupby("Date")
+    .apply(
+        lambda x: pd.Series({
+            "Long_Return": x.loc[x["Position"] == 1, "Daily_Return"].mean(),
+            "Short_Return": x.loc[x["Position"] == -1, "Daily_Return"].mean()
+        })
+    )
+    .reset_index()
+)
+
+daily_portfolio_returns["Long_Short_Return"] = (
+    daily_portfolio_returns["Long_Return"]
+    - daily_portfolio_returns["Short_Return"]
+)
+
+daily_portfolio_returns["Cumulative_Return"] = (
+    1 + daily_portfolio_returns["Long_Short_Return"]
+).cumprod()
+
+total_return = (
+    daily_portfolio_returns["Cumulative_Return"].iloc[-1] - 1
+)
+
+
+total_return = (
+    daily_portfolio_returns["Cumulative_Return"].iloc[-1] - 1
+)
+
+years = (
+    daily_portfolio_returns["Date"].max()
+    - daily_portfolio_returns["Date"].min()
+).days / 365.25
+
+annualised_return = (
+    daily_portfolio_returns["Cumulative_Return"].iloc[-1]
+    ** (1 / years)
+    - 1
+)
+
+annualised_volatility = (
+    daily_portfolio_returns["Long_Short_Return"].std()
+    * (252 ** 0.5)
+)
+
+sharpe_ratio = (
+    annualised_return / annualised_volatility
+)
+
+running_peak = (
+    daily_portfolio_returns["Cumulative_Return"].cummax()
+)
+
+drawdown = (
+    daily_portfolio_returns["Cumulative_Return"]
+    / running_peak
+    - 1
+)
+
+maximum_drawdown = drawdown.min()
+
+print("Maximum drawdown (%):", maximum_drawdown * 100)
