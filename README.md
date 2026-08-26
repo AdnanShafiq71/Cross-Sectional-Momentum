@@ -30,7 +30,7 @@ US large-cap equity universe, built with Python and SQL.
 
 ## Statistical Significance
 
-Newey-West t-statistic: [fill in], p-value: [fill in].
+Newey-West t-statistic: [-0.000], p-value:  [0.999].
 [One sentence: is the result statistically distinguishable from zero?]
 
 ## Parameter Research
@@ -39,21 +39,18 @@ Tested lookbacks of 3-1, 6-1, 9-1, 12-1, and 18-1 months, at both
 top/bottom 5 and top/bottom 10 portfolio sizes, plus long-only variants.
 Full results in `data/parameter_research.csv` and visualised in
 `data/chart_parameter_heatmap.png`.
-
-[1-2 sentences: which specification performed best/worst, and whether
-poor performance is specific to 12-1 or general across lookbacks.]
+The best performing parameter was the long top 10 stocks only with an 18-1 month lookback period, achieving annual returns of 29.7% and a Sharpe ratio of 1.16.
+The worst performing parameter was the long-short top and bottom 5 stocks with a 9-1 month lookback period, achieving annual returns of -11.6% and a Sharpe ratio of -0.354
 
 ## Long vs Short Leg Analysis
 
-[1-2 sentences: was underperformance driven by the long leg, the short
-leg, or both? See `data/chart_long_vs_short.png`.]
+The long leg total return was 129.5% while the short leg total return was 122.4%. Both had roughly even levels of volatility at 23%/24%. This shows underperformance of the momentum strategy was driven by the short leg since it still achieved positive returns while our strategy was to short them.
 
 ## Transaction Cost Sensitivity
 
 Tested cost assumptions of 0, 5, 10, 25, and 50 bps per trade.
 See `data/cost_sensitivity.csv` and `data/chart_cost_sensitivity.png`.
-
-[1 sentence: is the strategy robust to costs, or fragile?]
+The strategy is fragile in regards to transaction cost sensitivity. Our Sharpe ratio fell from -0.14 to -0.27 showing that there is a significant impact from trading costs.
 
 ## Charts
 
