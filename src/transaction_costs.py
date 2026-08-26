@@ -116,8 +116,13 @@ annualised_volatility = (
     daily_returns["Net_Return"].std() * (252 ** 0.5)
 )
 
+risk_free_rate_annual = 0.04  # approx. average T-bill rate
+risk_free_rate_daily = (1 + risk_free_rate_annual) ** (1 / 252) - 1
+
+excess_returns = daily_returns["Net_Return"] - risk_free_rate_daily
+
 sharpe_ratio = (
-    annualised_return / annualised_volatility
+    excess_returns.mean() / excess_returns.std() * (252 ** 0.5)
 )
 
 running_max = (
