@@ -23,10 +23,10 @@ US large-cap equity universe, built with Python and SQL.
 | Total Return | [-10.1%] |
 | Annualised Return | [-2.7%] |
 | Annualised Volatility | [23.3%] |
-| Sharpe Ratio (excess return) | [fill in] |
-| Sortino Ratio | [fill in] |
+| Sharpe Ratio (excess return) | [-0.17] |
+| Sortino Ratio | [-0.23] |
 | Max Drawdown | [-38.7%] |
-| Calmar Ratio | [fill in] |
+| Calmar Ratio | [-0.07] |
 
 ## Statistical Significance
 
